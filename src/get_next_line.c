@@ -6,7 +6,7 @@
 /*   By: mafioron <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 14:43:14 by mafioron          #+#    #+#             */
-/*   Updated: 2024/11/21 18:48:34 by mafioron         ###   ########.fr       */
+/*   Updated: 2024/11/21 19:17:31 by mafioron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	*extract_line(static char *stock, int fd)
 	return (stock);
 }
 
-char	*precise_line(static char *stock)
+char	*precise_line(char *stock)
 {
 	char	*res;
 	int	i;
@@ -51,19 +51,27 @@ char	*precise_line(static char *stock)
 	return (res);
 		
 }
-
-static char	*after_line(static char *stock)
+// A refaire avec du sommeil (c degueu)
+char	*after_line(char *stock)
 {
-	static char	*s;
+	char	*s;
 	int	i;
+	int	j;
 
+	j = 0;
 	i = 0;
-	s = ft_strchr(stock, '\n');
+	while (stock[i] != '\n')
+		i++;
+	j = i;
 	while (stock[i])
-	{
-		s[i] =
-	}
-
+		i++;
+	s = calloc(sizeof(char) * (i - j) + 1);
+	i = j;
+	j = -1;
+	while (++j < i)
+		s[j++] = stock[i++];
+	free(stock);
+	return (s);
 }
 
 char	*get_next_line(int fd)
@@ -80,9 +88,8 @@ char	*get_next_line(int fd)
 	stock = extract_line(stock, fd);
 	buff = precise_line(stock);
 	if (ft_strchr(stock, '\n'))
-	{
-		stock = ft_strchr(stock, '\n');
-	}
+		stock = after_line(stock);
+	return (buff);
 }
 /*
 #include <stdio.h>
