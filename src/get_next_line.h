@@ -18,7 +18,7 @@
 #include <fcntl.h>
 #include <stddef.h>
 
-# define BUFFER_SIZE	42
+# define BUFFER_SIZE	5
 
 
 size_t	ft_strlen(const char *s);

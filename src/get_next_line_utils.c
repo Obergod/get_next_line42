@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
+#include "get_next_line.h"
 
 size_t	ft_strlen(const char *s)
 {
@@ -25,16 +25,16 @@ size_t	ft_strlen(const char *s)
 void	*ft_calloc(size_t nmemb, size_t size)
 {
 	void	*res;
-	void	*r;
+	char	*r;
 	size_t	len;
 
 	len = (size * nmemb);
 	res = (void *)malloc(len);
-	r = res;
+	r = (char *)res;
 	if (!res)
 		return (NULL);
 	while (len--)
-		*r = 0;
+		*r++ = '\0';
 	return (res);
 }
 
@@ -47,7 +47,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	len1 = ft_strlen(s1);
 	len2 = ft_strlen(s2);
-	res = ft_calloc(sizeof(char) * (len1 + len2) + 1);
+	res = (char *)ft_calloc((len1 + len2) + 1, sizeof(char));
 	if (!res)
 		return (NULL);
 	stock = res;

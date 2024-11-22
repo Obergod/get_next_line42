@@ -10,27 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line_utils.h"
+#include "get_next_line.h"
 
 char    *stock_extend(char *stock, char *buffer)
 {
     char    *temp;
 
-    temp = ft_strjoin(stash, buffer);
-    free(stash);
+    temp = ft_strjoin(stock, buffer);
+    free(stock);
     return (temp);
 }
 
-char	*extract_line(static char *stock, int fd)
+char	*extract_line(char *stock, int fd)
 {
-	char	*buff
+	char	*buff;
+	int	i;
 
-	while (!ft_strchr(stock, '\n'))
+	i = 1;
+	while (!ft_strchr(stock, '\n') && i != 0)
 	{
-		buff = ft_calloc(sizeof(char) * BUFFER_SIZE + 1);
-		if (read(fd, buff, BUFF_SIZE) <= 0)
+		buff = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+		i = read(fd, buff, BUFFER_SIZE);
+		if (i < 0)
 			return (NULL);
-		stock = stock_extended(stock, buff);
+		stock = stock_extend(stock, buff);
 	}
 	return (stock);
 }
@@ -43,13 +46,12 @@ char	*precise_line(char *stock)
 
 	j = -1;
 	i = 0;
-	while (stock[i] != '\n')
+	while (stock[i] != '\n' && stock[i])
 		i++;
-	res = calloc(sizeof(char) * i + 2);
+	res = (char *)calloc(i + 1, sizeof(char));
 	while (++j < i + 1)
 		res[j] = stock[j];
 	return (res);
-		
 }
 // A refaire avec du sommeil (c degueu)
 char	*after_line(char *stock)
@@ -65,10 +67,10 @@ char	*after_line(char *stock)
 	j = i;
 	while (stock[i])
 		i++;
-	s = calloc(sizeof(char) * (i - j) + 1);
-	i = j;
-	j = -1;
-	while (++j < i)
+	s = (char *)ft_calloc((i - j) + 1, sizeof(char));
+	i = j + 1;
+	j = 0;
+	while (stock[i])
 		s[j++] = stock[i++];
 	free(stock);
 	return (s);
@@ -82,25 +84,36 @@ char	*get_next_line(int fd)
 	if (fd <= 0)
 		return (NULL);
 	if (!stock)
-		stock = ft_calloc(sizeof(char) * BUFFER_SIZE + 1);
+		stock = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!stock)
 		return (NULL);
 	stock = extract_line(stock, fd);
-	buff = precise_line(stock);
+	//quelques free a gerer
 	if (ft_strchr(stock, '\n'))
+	{
+		buff = precise_line(stock);
 		stock = after_line(stock);
-	return (buff);
+		return (buff);
+	}
+	else
+		return (stock);
 }
-/*
-#include <stdio.h>
 
-int	main(int ac, char **av)
+#include <stdio.h>
+int	main()
 {
 	int	fd;
 	char	*res;
 
-	fd = open(av[1], O_RDONLY);
+	fd = open("test.txt", O_RDONLY);
 	res = get_next_line(fd);
 	printf("this is line : %s\n", res);
+	//res jamais null ?
+	while (res != NULL)
+	{
+		res = get_next_line(fd);
+		printf("this is line : %s\n", res);
+	}
 	free(res);
-}*/
+	return (0);
+}
