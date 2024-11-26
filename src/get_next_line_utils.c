@@ -22,7 +22,7 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-void	*ft_calloc(size_t nmemb, size_t size)
+/*void	*ft_calloc(size_t nmemb, size_t size)
 {
 	void	*res;
 	char	*r;
@@ -35,6 +35,31 @@ void	*ft_calloc(size_t nmemb, size_t size)
 		return (NULL);
 	while (len--)
 		*r++ = '\0';
+	return (res);
+}*/
+
+void	*ft_memset(void *s, int c, size_t n)
+{
+	unsigned char	*dst;
+
+	dst = (unsigned char *)s;
+	while (n-- > 0)
+		*dst++ = c;
+	return (s);
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*res;
+	size_t	len;
+
+	len = (size * nmemb);
+	if ((int)len < 0 || ((int)nmemb < 0 && (int)size < 0))
+		return (NULL);
+	res = (void *)malloc(len);
+	if (!res)
+		return (NULL);
+	ft_memset(res, 0, len);
 	return (res);
 }
 
@@ -58,23 +83,16 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (stock);
 }
 
-char	*ft_strchr(const char *s, int c)
+int	ft_strchr(const char *s, int c)
 {
-	char	*stock;
 
-	if ((unsigned char)c == '\0')
-	{
-		stock = (char *)s + ft_strlen(s);
-		return (stock);
-	}
 	while (*s)
 	{
 		if (*s == (unsigned char)c)
 		{
-			stock = (char *)s;
-			return (stock);
+			return (1);
 		}
 		s++;
 	}
-	return (NULL);
+	return (0);
 }

@@ -18,6 +18,7 @@ char    *stock_extend(char *stock, char *buffer)
 
     temp = ft_strjoin(stock, buffer);
     free(stock);
+	free (buffer);
     return (temp);
 }
 
@@ -27,12 +28,16 @@ char	*extract_line(char *stock, int fd)
 	int	i;
 
 	i = 1;
-	while (!ft_strchr(stock, '\n') && i != 0)
+	while (!ft_strchr(stock, '\n'))
 	{
 		buff = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+		if (!buff)
+			return (NULL);
 		i = read(fd, buff, BUFFER_SIZE);
 		if (i < 0)
-			return (NULL);
+			return (free(buff), NULL);
+		if (i == 0)
+			return (free(buff), stock);
 		stock = stock_extend(stock, buff);
 	}
 	return (stock);
@@ -48,7 +53,9 @@ char	*precise_line(char *stock)
 	i = 0;
 	while (stock[i] != '\n' && stock[i])
 		i++;
-	res = (char *)calloc(i + 1, sizeof(char));
+	res = (char *)ft_calloc(i + 1, sizeof(char));
+	if (!res)
+		return (NULL);
 	while (++j < i + 1)
 		res[j] = stock[j];
 	return (res);
@@ -68,6 +75,8 @@ char	*after_line(char *stock)
 	while (stock[i])
 		i++;
 	s = (char *)ft_calloc((i - j) + 1, sizeof(char));
+	if (!s)
+		return (NULL);
 	i = j + 1;
 	j = 0;
 	while (stock[i])
@@ -80,14 +89,21 @@ char	*get_next_line(int fd)
 {
 	static char	*stock;
 	char	*buff;
-	
+
 	if (fd <= 0)
 		return (NULL);
 	if (!stock)
 		stock = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	/*else
+		free(buff);*/
 	if (!stock)
 		return (NULL);
 	stock = extract_line(stock, fd);
+	if (!stock || stock[0] == '\0')
+	{
+		free(stock);
+		return (NULL);
+	}
 	//quelques free a gerer
 	if (ft_strchr(stock, '\n'))
 	{
@@ -100,20 +116,25 @@ char	*get_next_line(int fd)
 }
 
 #include <stdio.h>
-int	main()
+//erreur d'affichage terminal
+int	main(int ac, char **av)
 {
 	int	fd;
 	char	*res;
+	int	i;
 
-	fd = open("test.txt", O_RDONLY);
-	res = get_next_line(fd);
-	printf("this is line : %s\n", res);
-	//res jamais null ?
-	while (res != NULL)
+	fd = open(av[1], O_RDONLY);
+	//fd = 1;
+	i = 0;
+	res = NULL;
+	while (i != -1)
 	{
 		res = get_next_line(fd);
-		printf("this is line : %s\n", res);
+		printf("this is line : %s", res);
+		if (res == NULL)
+			i = -1;
+		free(res);
 	}
-	free(res);
+	printf("\n");
 	return (0);
 }
