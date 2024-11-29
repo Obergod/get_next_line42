@@ -22,7 +22,7 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-/*void	*ft_calloc(size_t nmemb, size_t size)
+void	*ft_calloc(size_t nmemb, size_t size)
 {
 	void	*res;
 	char	*r;
@@ -36,7 +36,7 @@ size_t	ft_strlen(const char *s)
 	while (len--)
 		*r++ = '\0';
 	return (res);
-}*/
+}
 
 void	*ft_memset(void *s, int c, size_t n)
 {
@@ -48,19 +48,24 @@ void	*ft_memset(void *s, int c, size_t n)
 	return (s);
 }
 
-void	*ft_calloc(size_t nmemb, size_t size)
+char	*ft_strdup(const char *s)
 {
-	void	*res;
+	int		i;
+	char	*dst;
 	size_t	len;
 
-	len = (size * nmemb);
-	if ((int)len < 0 || ((int)nmemb < 0 && (int)size < 0))
+	i = 0;
+	len = ft_strlen(s);
+	dst = malloc(sizeof(char) * len + 1);
+	if (!dst)
 		return (NULL);
-	res = (void *)malloc(len);
-	if (!res)
-		return (NULL);
-	ft_memset(res, 0, len);
-	return (res);
+	while (s[i])
+	{
+		dst[i] = s[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (dst);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
