@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mafioron <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/19 14:43:14 by mafioron          #+#    #+#             */
-/*   Updated: 2024/11/21 19:17:31 by mafioron         ###   ########.fr       */
+/*   Created: 2024/12/03 18:26:46 by mafioron          #+#    #+#             */
+/*   Updated: 2024/12/03 18:26:50 by mafioron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*stock_extend(char *stock, char *buffer)
 {
@@ -86,30 +86,29 @@ char	*after_line(char *stock)
 	free(stock);
 	return (s);
 }
+
 char	*get_next_line(int fd)
 {
-	static char	*stock;
+	static char	*stock[FD_MAX];
 	char		*buff;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 		return (NULL);
-	if (!stock)
-		stock = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-	if (!stock)
+	if (!stock[fd])
+		stock[fd] = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	if (!stock[fd])
 		return (NULL);
-	stock = extract_line(stock, fd);
-	if (!stock || stock[0] == '\0')
-	{
-		if (stock)
-			free(stock);
+	stock[fd] = extract_line(stock[fd], fd);
+	if (!stock[fd])
 		return (NULL);
-	}
-	if (!ft_strchr(stock, '\n'))
-		return (buff = ft_strdup(stock), free(stock), stock = NULL, buff);
+	if (stock[fd][0] == '\0')
+		return (free(stock[fd]), NULL);
+	if (!ft_strchr(stock[fd], '\n'))
+		return (buff = ft_strdup(stock[fd]), free(stock[fd]), stock[fd] = NULL, buff);
 	else
 	{
-		buff = precise_line(stock);
-		stock = after_line(stock);
+		buff = precise_line(stock[fd]);
+		stock[fd] = after_line(stock[fd]);
 		return (buff);
 	}
 }
@@ -118,15 +117,22 @@ char	*get_next_line(int fd)
 int main(int ac, char **av)
 {
 	int fd;
+	int	fd2;
 	char *res;
 	int i;
 
-	fd = open("empty.txt", O_RDONLY);
 	 //fd = 0;
+	fd = open("test.txt", O_RDONLY);
+	fd2 = open("test1.txt", O_RDONLY);
 	i = 0;
 	res = NULL;
 	while (i != -1)
 	{
+		res = get_next_line(fd2);
+		printf("this is line : %s", res);
+		if (res == NULL)
+			i = -1;
+		free(res);
 		res = get_next_line(fd);
 		printf("this is line : %s", res);
 		if (res == NULL)

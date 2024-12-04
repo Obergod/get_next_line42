@@ -1,19 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mafioron <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/21 13:35:53 by mafioron          #+#    #+#             */
-/*   Updated: 2024/11/21 16:23:19 by mafioron         ###   ########.fr       */
+/*   Created: 2024/12/03 18:22:50 by mafioron          #+#    #+#             */
+/*   Updated: 2024/12/03 18:22:53 by mafioron         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
+
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 100000
+#  define BUFFER_SIZE 1
+# endif
+
+# ifndef FD_MAX
+#  define FD_MAX 1024
 # endif
 
 # include <fcntl.h>
